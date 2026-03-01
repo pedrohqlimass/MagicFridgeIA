@@ -12,39 +12,39 @@ import java.util.List;
 @RequestMapping("/food")
 public class FoodItemController {
 
-    private FoodItemService service;
+    private FoodItemService foodItemService;
 
-    public FoodItemController(FoodItemService service) {
-        this.service = service;
+    public FoodItemController(FoodItemService foodItemService) {
+        this.foodItemService = foodItemService;
     }
 
     //POST
     @PostMapping
     public ResponseEntity<FoodItemModel> criar(@RequestBody FoodItemModel foodItemModel) {
-        FoodItemModel salvo = service.salvar(foodItemModel);
+        FoodItemModel salvo = foodItemService.salvar(foodItemModel);
         return ResponseEntity.ok(salvo);
     }
     //GET
     @GetMapping
     public ResponseEntity<List<FoodItemModel>> listar() {
 
-        List<FoodItemModel> models = service.listar();
+        List<FoodItemModel> foodItemModels = foodItemService.listar();
 
-        if (models.isEmpty()) {
+        if (foodItemModels.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(models);
+        return ResponseEntity.ok(foodItemModels);
     }
 
     //GET POR ID
     @GetMapping("/{id}")
     public ResponseEntity<?> listarId(@PathVariable Long id) {
 
-        FoodItemModel model = service.listarId(id);
+        FoodItemModel foodItemModel = foodItemService.listarId(id);
 
-        if (model != null) {
-            return ResponseEntity.ok(model);
+        if (foodItemModel != null) {
+            return ResponseEntity.ok(foodItemModel);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Este item não existe no banco de dados");
@@ -55,7 +55,7 @@ public class FoodItemController {
     @PutMapping("/{id}")
     public ResponseEntity<String> atualizarItem(@PathVariable Long id, @RequestBody FoodItemModel model) {
 
-        FoodItemModel itemAtualizado = service.atualizarItem(id, model);
+        FoodItemModel itemAtualizado = foodItemService.atualizarItem(id, model);
 
         if (itemAtualizado != null) {
             return ResponseEntity.ok("Item atualizado com sucesso!");
@@ -68,7 +68,7 @@ public class FoodItemController {
     //DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarItem(@PathVariable Long id) {
-        service.deletarItem(id);
+        foodItemService.deletarItem(id);
         return ResponseEntity.noContent().build();
     }
 }
