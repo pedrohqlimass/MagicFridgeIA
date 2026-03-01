@@ -1,5 +1,6 @@
 package com.pedrohqlimass.MagicFridgeIA.service;
 
+import com.pedrohqlimass.MagicFridgeIA.model.FoodItemModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -9,6 +10,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipeService {
@@ -23,8 +25,14 @@ public class RecipeService {
         this.webClient = webClient;
     }
 
-    public Mono<String> generateRecipe() {
-        String prompt = "Me sugira receitas simples com ingredientes comuns";
+    public Mono<String> generateRecipe(List<FoodItemModel> foodItemModels) {
+
+        String alimentos = foodItemModels.stream()
+                .map(item -> String.format("%s (%s) - Quantidade: %d, Validade: %s",
+                        item.getNome(), item.getFoodItemCategory(), item.getQuantidade(), item.getValidade()))
+                .collect(Collectors.joining("\n"));
+
+        String prompt = "Baseado no meu banco de dados faça um receita com os seguintes alimentos:\n " + alimentos;
 
         // cria o prompt
         Map<String, Object> requestBody = Map.of(
